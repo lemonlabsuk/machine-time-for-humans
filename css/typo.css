@@ -244,6 +244,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 100;
   color: #000;
   line-height: 1.35;
+  font-weight: bold;
 }
 
 /* 标题应该更贴紧内容，并与其他块区分，margin 值要相应做优化 */
