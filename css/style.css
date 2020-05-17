@@ -548,8 +548,13 @@ pre {
 
 .mermaid {
   display: flex;
+  margin-right: 45px;
 }
 
 .mermaid > p {
   margin-bottom: 0px;
+}
+
+.mermaid > svg {
+  margin: 0 auto;
 }

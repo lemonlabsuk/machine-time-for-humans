@@ -94,6 +94,10 @@
   color: var(--nord3);
 }
 
+strong .remark-code {
+  font-size: 32px;
+}
+
 .nord-light blockquote {
   display: block;
   margin-block-start: 1em;

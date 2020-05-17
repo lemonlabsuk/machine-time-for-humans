@@ -73,13 +73,13 @@ class: nord-light
 
 ## Subdomain · First Implementation
 
-- Version `0.3.6`
-
 ```scala
 val hostParts = host.split('.').toVector
 
 def subdomain = hostParts.head
 ```
+
+- Version `0.3.6`
 
 ---
 
@@ -94,6 +94,8 @@ class: nord-light, center, middle
 class: nord-light
 
 ## First Implementation · Problems
+
+<br>
 
 ```scala
 scala> Url.parse("ftp://myserver/file.txt").subdomain
@@ -130,23 +132,14 @@ class: nord-light
 
 class: nord-light
 
-## Subdomain · New API
+## Subdomain · Being Pragmatic
+
+<br>
+
+.center[![domain name](static/domain-name.png)]
 
 - Version `0.5.0`
-
-```scala
- // http://console.aws.amazon.com, returns:
- //  - console
- //  - console.aws
- //  - console.aws.amazon
-def subdomains: Seq[String]
-
- // http://console.aws.amazon.com, returns:
- //  - console.aws
-def subdomain: Option[String]
-```
-
- - How do we drop the TLD?
+- How do we drop the TLD + Domain Name?
 
 ---
 
@@ -155,10 +148,10 @@ class: nord-light
 ## Dropping the TLD
 
 ```scala
-host.split('.').dropRight(1)
+host.split('.').dropRight(2)
 ```
 
-![no](https://media.giphy.com/media/23BST5FQOc8k8/giphy.gif)
+.center[![no](https://media.giphy.com/media/23BST5FQOc8k8/giphy.gif)]
 
  - What about SLDs `.co.uk`? lower levels?
  - So what's the algorithm?
@@ -177,13 +170,13 @@ class: nord-light
 
 ## publicsuffix.org
 
-- Maintained by Mozilla Foundation
-- Effective top-level domain (eTLD)
-- Firefox/Chrome/Chromium/Opera/IE
-
 > Since there was and remains no algorithmic method of finding the highest level at 
 > which a domain may be registered, the only method is to create a list. 
 > This is the aim of the Public Suffix List.
+
+- Maintained by Mozilla Foundation
+- Effective top-level domain (eTLD)
+- Firefox/Chrome/Chromium/Opera/IE
 
 ---
 
@@ -215,6 +208,8 @@ class: nord-light
 
 - Encoding `uk`, `hk`, `co.uk` and `ac.uk`
 
+<br>
+
 .mermaid[
 <pre>
   graph LR
@@ -231,7 +226,28 @@ class: nord-light
 </pre>
 ]
 
+<br>
+
+.center[
 ## www.google.co.uk
+]
+
+---
+
+class: nord-light
+
+## Trie · In Scala
+
+<br>
+
+<strong>
+```scala
+case class Trie(
+  ‏‏‎ ‎ children: Map[Char,Trie],
+‏‏‎‎‏‏‎ ‎ end: Boolean
+)
+```
+</strong>
 
 ---
 
@@ -240,6 +256,8 @@ class: nord-light
 ## Trie · By Segment
 
 - Encoding `uk`, `hk`, `co.uk` and `ac.uk`
+
+<br>
 
 .mermaid[
 <pre>
@@ -256,11 +274,39 @@ class: nord-light
 </pre>
 ]
 
-## www.google.co.uk
+<br>
 
-- Memory and time trade offs
+.center[
+## www.google.co.uk
+]
+
+---
+
+class: nord-light
+
+## Segment Trie · In Scala
+
+<br>
+
+<strong>
+```scala
+case class Trie(
+  ‏‏‎ ‎ children: Map[String,Trie],
+  ‏‏‎ ‎ end: Boolean
+)
+```
+</strong>
+
+---
+
+class: nord-light
+
+## Which Trie?
+
+- Memory trade offs
 - Fewer hops
 - Reverse string vs segment split and reverse
+- Benchmarks in a later slide!
 
 ---
 
@@ -269,17 +315,19 @@ class: nord-light
 ## Death by JSON
 
 ```json
-{"c":{"்":{"c":{"ர":{"c":{"ூ":{"c":{"ப":{"c":{"்":{"c":{"ப":{"c":
-{"க":{"c":{"்":{"c":{"ங":{"c":{"ி":{"c":{"ச":{"c":{},"e":true}},
-"e":false}},"e":false}},"e":false}},"e":false}},"e":false}},"e":
-false}},"e":false}},"e":false}},"e":false}},"e":false},"ם":{"c":
-{"ו":{"c":{"ק":{"c":{},"e":true}},"e":false}},"e":false},"e":{"c":
-{"e":{"c":{"e":{"c":{"i":{"c":{},"e":true}},"e":false},".":{"c":{
-"e":{"c":{"i":{"c":{"f":{"c":{},"e":true}},"e":false}},"e":false},
-"u":{"c":{"d":{"c":{"e":{"c":{},"e":true}},"e":false}},"e":false},
-"m":{"c":{"o":{"c":{"c":{"c":{".":{"c":{"t":{"c":{"o":{"c":{"p":{
-"c":{"s":{"c":{"g":{"c":{"o":{"c":{"l":{"c":{"b":{"c":{},"e":true}
-},"e":false}},"e":false}},"e":false}},"e":false}},"e":false}},"e":
+{"c":{"்":{"c":{"ர":{"c":{"ூ":{"c":{"ப":{"c":{"்":{"c":{"ப":{"c":{"க":{"c":{"்":{"c":{"ங":
+{"c":{"ி":{"c":{"ச":{"c":{},"e":true}},"e":false}},"e":false}},"e":false}},"e":false}},"e":
+false}},"e":false}},"e":false}},"e":false}},"e":false}},"e":false},"ם":{"c":{"ו":{"c":{"ק":
+{"c":{},"e":true}},"e":false}},"e":false},"e":{"c":{"e":{"c":{"e":{"c":{"i":{"c":{},"e":true
+}},"e":false},".":{"c":{"e":{"c":{"i":{"c":{"f":{"c":{},"e":true}},"e":false}},"e":false},
+"u":{"c":{"d":{"c":{"e":{"c":{},"e":true}},"e":false}},"e":false},"m":{"c":{"o":{"c":{"c":{
+"c":{".":{"c":{"t":{"c":{"o":{"c":{"p":{"c":{"s":{"c":{"g":{"c":{"o":{"c":{"l":{"c":{"b":{
+"c":{},"e":true}},"e":false}},"e":false}},"e":false}},"e":false}},"e":false}},"e":false}},
+"e":false}},"e":false}},"e":true}},"e":false}},"e":false},"i":{"c":{"r":{"c":{"p":{"c":{},
+"e":true}},"e":false}},"e":false},"v":{"c":{"o":{"c":{"g":{"c":{},"e":true}},"e":false}},"e"
+:false},"b":{"c":{"i":{"c":{"l":{"c":{},"e":true}},"e":false}},"e":false},"g":{"c":{"r":{"c"
+:{"o":{"c":{},"e":true}},"e":false}},"e":false},"p":{"c":{"i":{"c":{"a":{"c":{},"e":true}},
+"e":false}},"e":false},"k":{"c":{"i":{"c":{"i":{"c":{"r":{"c":{},"e":true}},"e":false}},"e"
 ...
 ```
 
@@ -317,7 +365,7 @@ class: nord-light
 [error] one error found
 ```
 
-![sigh](https://media.giphy.com/media/wPOARRtwuFG0/giphy.gif)
+.center[![sigh](https://media.giphy.com/media/wPOARRtwuFG0/giphy.gif)]
 
 ---
 
@@ -331,7 +379,7 @@ class: nord-light
 [error] one error found
 ```
 
-![cry](https://media.giphy.com/media/k61nOBRRBMxva/giphy.gif)
+.center[![cry](https://media.giphy.com/media/k61nOBRRBMxva/giphy.gif)]
 
 ---
 
@@ -343,12 +391,13 @@ class: nord-light
 package io.lemonlabs.uri.inet
 
 object PublicSuffixTrie { 
-  lazy val publicSuffixTrie = Trie(Map(
-   '்' -> _bcd.t, 'л' -> _43b.t, '販' -> _8ca9.t,'团' -> _56e2.t,
-   's' -> _73.t, '拿' -> _62ff.t, '्' -> _94d.t,'业' -> _4e1a.t,
-   '你' -> _4f60.t,'б' -> _431.t,'x' -> _78.t,'品' -> _54c1.t,
-   '物' -> _7269.t,'و' -> _648.t,'山' -> _5c71.t,'府' -> _5e9c.t,
-   ...
+  ‏‏‎ ‎ lazy val publicSuffixTrie = Trie(Map(
+  ‏‏‎ ‎   ''்' -> _bcd.t,'ם' -> _5dd.t,'e' -> _65.t,'л' -> _43b.t,'販' -> _8ca9.t,'团' -> _56e2.t,
+  ‏‏‎ ‎   's' -> _73.t,'拿' -> _62ff.t,'्' -> _94d.t,'业' -> _4e1a.t,'你' -> _4f60.t,'б' -> _431.t,
+  ‏‏‎ ‎   'x' -> _78.t,'品' -> _54c1.t,'物' -> _7269.t,'و' -> _648.t,'山' -> _5c71.t,'府' -> _5e9c.t,
+  ‏‏‎ ‎   '站' -> _7ad9.t,'闻' -> _95fb.t,'ತ' -> _ca4.t,'ب' -> _628.t,'籍' -> _7c4d.t,'益' -> _76ca.t,
+  ‏‏‎ ‎   '尚' -> _5c1a.t,'线' -> _7ebf.t,'n' -> _6e.t,'ม' -> _e21.t,'动' -> _52a8.t,'な' -> _306a.t,
+  ‏‏‎ ‎   ...
 }
 ```
 
@@ -369,7 +418,9 @@ class: nord-light
 
 ## Another issue 
 
-![big scala.js file](static/big-scala-js-file.png)
+<br>
+
+.center[![big scala.js file](static/big-scala-js-file.png)]
 
 ---
 
@@ -448,7 +499,7 @@ class: nord-light, center, middle
       targetTextArea.innerHTML = lines.map(line => line.replace(/^(?!\s+[\-|0-9])\s+/, "")).join("\n");
 
       var slideshow = remark.create({
-        ratio: "4:3", // window ratio
+        ratio: "16:9", // window ratio
         // arta, ascetic, dark, default, far, github, googlecode, idea,
         // ir-black, magula, monokai, rainbow, solarized-dark, solarized-light,
         // sunburst, tomorrow, tomorrow-night-blue, tomorrow-night-bright,
