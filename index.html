@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Template</title>
+    <title>Machine Time For Humans</title>
     <meta charset="utf-8" />
     <meta
       name="viewport"
@@ -39,444 +39,240 @@ class: typo, typo-selection
 
 class: nord-light, center, middle
 
-## One Scala Method
+## Machine Time For Humans
 
-<small>Seven Years of Rewrites</small>
-
----
-
-class: nord-light, center, middle
-
-## `.subdomain`
+![jim carrey watch](https://media.giphy.com/media/P40Gkig2OTlLy/giphy.gif)
 
 ---
 
 class: nord-light
 
-## scala-uri
+## You have a special ability
 
-- scala-uri a Scala URL Parser
-- Used by
-  - Guardian homepage
-  - HMRC
-- 0.1 released 19 Nov 2012
-
----
-
-class: nord-light, center, middle
-
-![subdomain issue](static/subdomain-issue.png)
+- Dealing with the millisecond time unit really well!
+- 5000ms timeout
+- 100ms HTTP response time
 
 ---
 
 class: nord-light
 
-## Subdomain · First Implementation
+## Microseconds and Nanoseconds
 
-```scala
-val hostParts = host.split('.').toVector
-
-def subdomain = hostParts.head
-```
-
-- Version `0.3.6`
+- Microbenchmarking - JMH
+- Profiling - YourKit, VisualVM
 
 ---
 
 class: nord-light, center, middle
  
-## Job Done.
-
-![mic drop](https://media.giphy.com/media/3o7qDSOvfaCO9b3MlO/giphy.gif)
-
----
-
-class: nord-light
-
-## First Implementation · Problems
-
-<br>
-
-```scala
-scala> Url.parse("https://google.com").subdomain
-res0: String = google
-
-scala> Url.parse("http://127.0.0.1/index.html").subdomain
-res1: String = 127
-
-scala> Url.parse("https://console.aws.amazon.com").subdomain
-res2: String = console
-```
+- A microsecond = 1 millionth of a second
+- A nanosecond = 1 billionth of a second
 
 ---
 
 class: nord-light, center, middle
  
-![dunno](https://media.giphy.com/media/y65VoOlimZaus/giphy.gif)
+## Imagine a world where computers are slow
 
-## What even is a Subdomain?
-
----
-
-class: nord-light
-
-## Subdomain · Definition
-
-> A subdomain is a domain that is part of a larger domain.
-> For example, `west.example.com` is a subdomain of the `example.com` domain, 
-> which in turn is a subdomain of the `com` top-level domain (TLD).
-
-[Source: wikipedia](https://en.wikipedia.org/wiki/Subdomain)
+![computer rage](https://media.giphy.com/media/3ohs81rDuEz9ioJzAA/giphy.gif)
 
 ---
 
 class: nord-light
+ 
+## No, I mean *really* slow
 
-## Subdomain · Being Pragmatic
+ - A 1 nanosecond operation now takes 1 second
 
-<br>
-
-.center[![domain name](static/domain-name.png)]
-
-- How do we drop the TLD + Domain Name?
+![slow sloth](https://media.giphy.com/media/OocLVILtd7ybm/giphy.gif)
 
 ---
 
 class: nord-light
-
-## Dropping the TLD
+ 
+## a + b
 
 ```scala
-host.split('.').dropRight(2)
+a + b
 ```
 
-.center[![no](https://media.giphy.com/media/23BST5FQOc8k8/giphy.gif)]
-
- - What about SLDs `.co.uk`? lower levels?
- - So what's the algorithm?
+- This takes 2 seconds
 
 ---
 
 class: nord-light, center, middle
 
-![mild shock](https://media.giphy.com/media/PFwKHjOcIoVUc/giphy.gif)
-
-## There is no algorithm
- 
----
-
-class: nord-light
-
-## publicsuffix.org
-
-> Since there was and remains no algorithmic method of finding the highest level at 
-> which a domain may be registered, the only method is to create a list. 
-> This is the aim of the Public Suffix List.
-
-- Maintained by Mozilla Foundation
-- Effective top-level domain (eTLD)
-- Firefox/Chrome/Chromium/Opera/IE
+## Quiz time!
 
 ---
 
 class: nord-light
-
-## publicsuffix.org
-
-```sql
-// ===BEGIN ICANN DOMAINS===
  
-// ac : https://en.wikipedia.org/wiki/.ac
-ac
-com.ac
-edu.ac
-gov.ac
-net.ac
-mil.ac
-org.ac
+## Map.get
+
+```scala
+oneHundredDoubles.get(key)
 ```
 
- - Full List [public_suffix_list.dat](https://github.com/publicsuffix/list/blob/master/public_suffix_list.dat)
- - Find the **longest** match against a list of suffixes
+---
+
+class: nord-light, center, middle
+
+## 8 Seconds
 
 ---
 
 class: nord-light
+ 
+## Half then sum 
 
-## Trie
-
-- Encoding `uk`, `hk`, `co.uk` and `ac.uk`
-
-<br>
-
-.mermaid[
-<pre>
-  graph LR
-    root(( )) --> k((k)) --> u((u)) --> d1((.))
-    k --> h((h))
-    d1 --> o((o)) --> c1((c))
-    d1 --> a((a)) --> c2((c))
-
-    style root fill:#444,stroke:#444
-    style u fill:#ffdede,stroke:#d33,color:#d33
-    style h fill:#ffdede,stroke:#d33,color:#d33
-    style c1 fill:#ffdede,stroke:#d33,color:#d33
-    style c2 fill:#ffdede,stroke:#d33,color:#d33
-</pre>
-]
-
-<br>
-
-.center[
-## www.google.co.uk
-]
-
----
-
-class: nord-light
-
-## Trie · In Scala
-
-<br>
-
-<strong>
 ```scala
-case class Trie(
-  ‏‏‎ ‎ children: Map[Char,Trie],
-‏‏‎‎‏‏‎ ‎ end: Boolean
+oneHundredDoubles.values.map(_ / 2).sum
+```
+
+---
+
+class: nord-light, center, middle
+
+## 33 Minutes
+
+---
+
+class: nord-light
+ 
+## Sum then half
+
+```scala
+oneHundredDoubles.values.sum / 2
+```
+
+---
+
+class: nord-light, center, middle
+
+## 13 Minutes
+
+---
+
+class: nord-light
+ 
+## Create an Exception
+
+```scala
+new Exception("Oh no!").getStackTrace
+```
+
+---
+
+class: nord-light, center, middle
+
+## 1 Hour 52 Minutes
+
+---
+
+
+class: nord-light
+ 
+## Parse some JSON
+
+```scala
+io.circe.parser.parse (
+  """
+    {
+      "foo": "bar",
+      "baz": 123,
+      "list of stuff": [ 4, 5, 6 ]
+    }
+  """
 )
 ```
-</strong>
-
----
-
-class: nord-light
-
-## Trie · By Segment
-
-- Encoding `uk`, `hk`, `co.uk` and `ac.uk`
-
-<br>
-
-.mermaid[
-<pre>
-  graph LR
-    root(( )) --> uk((uk)) --> co((co))
-    root --> hk((hk))
-    uk --> ac((ac))
-
-    style root fill:#444,stroke:#444
-    style uk fill:#ffdede,stroke:#d33,color:#d33
-    style hk fill:#ffdede,stroke:#d33,color:#d33
-    style co fill:#ffdede,stroke:#d33,color:#d33
-    style ac fill:#ffdede,stroke:#d33,color:#d33
-</pre>
-]
-
-<br>
-
-.center[
-## www.google.co.uk
-]
-
----
-
-class: nord-light
-
-## Segment Trie · In Scala
-
-<br>
-
-<strong>
-```scala
-case class Trie(
-  ‏‏‎ ‎ children: Map[String,Trie],
-  ‏‏‎ ‎ end: Boolean
-)
-```
-</strong>
-
----
-
-class: nord-light
-
-## Which Trie?
-
-- Memory trade offs
-- Fewer hops
-- Reverse string vs segment split and reverse
-- Benchmarks in a later slide!
-
----
-
-class: nord-light
-
-## Death by JSON
-
-```json
-{"c":{"்":{"c":{"ர":{"c":{"ூ":{"c":{"ப":{"c":{"்":{"c":{"ப":{"c":{"க":{"c":{"்":{"c":{"ங":
-{"c":{"ி":{"c":{"ச":{"c":{},"e":true}},"e":false}},"e":false}},"e":false}},"e":false}},"e":
-false}},"e":false}},"e":false}},"e":false}},"e":false}},"e":false},"ם":{"c":{"ו":{"c":{"ק":
-{"c":{},"e":true}},"e":false}},"e":false},"e":{"c":{"e":{"c":{"e":{"c":{"i":{"c":{},"e":true
-}},"e":false},".":{"c":{"e":{"c":{"i":{"c":{"f":{"c":{},"e":true}},"e":false}},"e":false},
-"u":{"c":{"d":{"c":{"e":{"c":{},"e":true}},"e":false}},"e":false},"m":{"c":{"o":{"c":{"c":{
-"c":{".":{"c":{"t":{"c":{"o":{"c":{"p":{"c":{"s":{"c":{"g":{"c":{"o":{"c":{"l":{"c":{"b":{
-"c":{},"e":true}},"e":false}},"e":false}},"e":false}},"e":false}},"e":false}},"e":false}},
-"e":false}},"e":false}},"e":true}},"e":false}},"e":false},"i":{"c":{"r":{"c":{"p":{"c":{},
-"e":true}},"e":false}},"e":false},"v":{"c":{"o":{"c":{"g":{"c":{},"e":true}},"e":false}},"e"
-:false},"b":{"c":{"i":{"c":{"l":{"c":{},"e":true}},"e":false}},"e":false},"g":{"c":{"r":{"c"
-...
-```
-
-- Full JSON [public_suffix_trie.json](https://raw.githubusercontent.com/lemonlabsuk/scala-uri/1.4.x/jvm/src/main/resources/public_suffix_trie.json)
-- Version `0.5.0`
-
----
-
-class: nord-light
-
-## Concerns
- 
-- Introduced a JSON Parsing dependency
-- `0.5.x` and `1.x` - no Scala.js support
-- [Poor GraalVM experience](https://github.com/lemonlabsuk/scala-uri/issues/22):
-
-![graal vm](static/graal.png)
-
----
-
-class: nord-light
-
-## Code Gen!
-
- - `2.0.0` let's replace that JSON with code
-
----
-
-class: nord-light
-
-## Code Gen?
-
-```sql
-[error] Error while emitting io/lemonlabs/uri/inet/PublicSuffixTrie$
-[error] Method too large: io/lemonlabs/uri/inet/PublicSuffixTrie$.publicSuffixTrie ()Trie;
-[error] one error found
-```
-
-.center[![sigh](https://media.giphy.com/media/wPOARRtwuFG0/giphy.gif)]
-
----
-
-class: nord-light
-
-## Code Gen?
-
-```sql
-[error] Error while emitting io/lemonlabs/uri/inet/PublicSuffixTrie$
-[error] Class too large: io/lemonlabs/uri/inet/PublicSuffixTrie$
-[error] one error found
-```
-
-.center[![cry](https://media.giphy.com/media/k61nOBRRBMxva/giphy.gif)]
-
----
-
-class: nord-light
-
-## Code Gen
-
-```scala
-package io.lemonlabs.uri.inet
-
-object PublicSuffixTrie { 
-  ‏‏‎ ‎ lazy val publicSuffixTrie = Trie(Map(
-  ‏‏‎ ‎   ''்' -> _bcd.t,'ם' -> _5dd.t,'e' -> _65.t,'л' -> _43b.t,'販' -> _8ca9.t,'团' -> _56e2.t,
-  ‏‏‎ ‎   's' -> _73.t,'拿' -> _62ff.t,'्' -> _94d.t,'业' -> _4e1a.t,'你' -> _4f60.t,'б' -> _431.t,
-  ‏‏‎ ‎   'x' -> _78.t,'品' -> _54c1.t,'物' -> _7269.t,'و' -> _648.t,'山' -> _5c71.t,'府' -> _5e9c.t,
-  ‏‏‎ ‎   '站' -> _7ad9.t,'闻' -> _95fb.t,'ತ' -> _ca4.t,'ب' -> _628.t,'籍' -> _7c4d.t,'益' -> _76ca.t,
-  ‏‏‎ ‎   '尚' -> _5c1a.t,'线' -> _7ebf.t,'n' -> _6e.t,'ม' -> _e21.t,'动' -> _52a8.t,'な' -> _306a.t,
-  ‏‏‎ ‎   ...
-}
-```
-
-- 154k lines of Scala code
-- Full code [PublicSuffixTrie.scala](https://raw.githubusercontent.com/lemonlabsuk/scala-uri/2.0.0/shared/src/main/scala/io/lemonlabs/uri/inet/PublicSuffixTrie.scala)
-
----
-
-class: nord-light
-
-## It worked!
-
-<iframe width="100%" height="70%" src="https://lemonlabs.io/scala-uri-scalajs-example/index.html" allowfullscreen frameborder=”no” border=”0″ marginwidth=”0″ marginheight=”0″ scrolling=”yes” allowtransparency=”yes”></iframe> 
-
----
-
-class: nord-light
-
-## Another issue 
-
-<br>
-
-.center[![big scala.js file](static/big-scala-js-file.png)]
-
----
-
-class: nord-light
-
-## Let's Benchmark 
-
-- Trie (each node a character)
-- Trie (each node a segment)
-- and???
 
 ---
 
 class: nord-light, center, middle
 
-![short circuit scan](https://media.giphy.com/media/DwrnYsZCXspu8/giphy.gif)
-
-## Scan the whole public suffix list
+## 7 Minutes 43 Seconds
 
 ---
 
 class: nord-light
-
-## Set look-up
-
-- Store public suffix list in a `Set`
-- Lookup suffixes L to R
+ 
+## HTTP - localhost
 
 ```scala
-suffixes.contains("www.google.co.uk")  false
-suffixes.contains("google.co.uk")      false
-suffixes.contains("co.uk")             true
+http.client.expect[String]("http://localhost:8080/hello").unsafeRunSync()
 ```
----
-
-class: nord-light
-
-## Benchmarking Public Suffix Algorithms · List Size
-
-<iframe width="100%" height="70%" src="https://lemonlabs.io/scala-uri-benchmarks/public-suffixes/suffix-list-size/" allowfullscreen frameborder=”no” border=”0″ marginwidth=”0″ marginheight=”0″ scrolling=”yes” allowtransparency=”yes”></iframe>
 
 ---
 
-class: nord-light
+class: nord-light, center, middle
 
-## Benchmarking Public Suffix Algorithms · Segment Count
-
-<iframe width="100%" height="70%" src="https://lemonlabs.io/scala-uri-benchmarks/public-suffixes/segment-count/" allowfullscreen frameborder=”no” border=”0″ marginwidth=”0″ marginheight=”0″ scrolling=”yes” allowtransparency=”yes”></iframe>
+## 2 Days
 
 ---
 
 class: nord-light
+ 
+## HTTP - London server
 
-## Today
+```scala
+http.client.expect[String]("https://dynamodb.eu-west-2.amazonaws.com").unsafeRunSync()
+```
 
-- scala-uri `2.2.2`
-- `Set` look-ups for public suffixes
-- 1.4MB Scala.js build
+---
+
+class: nord-light, center, middle
+
+## 5 Months 24 Days
+
+---
+
+class: nord-light
+ 
+## HTTP - us-east-1 server
+
+```scala
+http.client.expect [String]("https://dynamodb.us-east-1.amazonaws.com").unsafeRunSync()
+```
+
+---
+
+class: nord-light, center, middle
+
+## 2 Years 10 Months 20 Days
+
+---
+
+class: nord-light
+ 
+## HTTP - us-west-2 server
+
+```scala
+http.client.expect[String]("https://dynamodb.us-west-1.amazonaws.com").unsafeRunSync()
+```
+
+---
+
+class: nord-light, center, middle
+
+## 4 Years 11 Months 5 Days
+
+---
+
+class: nord-light
+ 
+## Integration tests
+
+```scala
+sbt it:test
+```
+
+---
+
+class: nord-light, center, middle
+
+## 9.51 Millenia
 
 ---
 

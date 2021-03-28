@@ -44,3 +44,18 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+target/
+*.iml
+*.ipr
+*.iws
+.idea/
+
+.project
+
+# OS X
+Icon
+Thumbs.db
+.DS_Store
+
+.history
+
