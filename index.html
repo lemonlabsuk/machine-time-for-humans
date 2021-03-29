@@ -101,6 +101,18 @@ a + b
 
 ---
 
+class: nord-light
+ 
+## Map.get
+
+```scala
+ints.get(key)
+```
+
+- This takes 8.5 Seconds
+
+---
+
 class: nord-light, center, middle
 
 ## Quiz time!
@@ -109,17 +121,17 @@ class: nord-light, center, middle
 
 class: nord-light
  
-## Map.get
+## Map.get 10MB
 
 ```scala
-oneHundredDoubles.get(key)
+tenMegaByteBlobs.get(key)
 ```
 
 ---
 
 class: nord-light, center, middle
 
-## 8 Seconds
+## 8.5 Seconds
 
 ---
 
@@ -128,14 +140,14 @@ class: nord-light
 ## Half then sum 
 
 ```scala
-oneHundredDoubles.values.map(_ / 2).sum
+ints.values.map(_ / 2).sum
 ```
 
 ---
 
 class: nord-light, center, middle
 
-## 33 Minutes
+## 37 Minutes
 
 ---
 
@@ -144,14 +156,14 @@ class: nord-light
 ## Sum then half
 
 ```scala
-oneHundredDoubles.values.sum / 2
+ints.values.sum / 2
 ```
 
 ---
 
 class: nord-light, center, middle
 
-## 13 Minutes
+## 15 Minutes
 
 ---
 
@@ -192,7 +204,7 @@ io.circe.parser.parse (
 
 class: nord-light, center, middle
 
-## 7 Minutes 43 Seconds
+## 9 Minutes 8 Seconds
 
 ---
 
@@ -208,7 +220,7 @@ http.client.expect[String]("http://localhost:8080/hello").unsafeRunSync()
 
 class: nord-light, center, middle
 
-## 2 Days
+## 3 Days
 
 ---
 
@@ -224,7 +236,7 @@ http.client.expect[String]("https://dynamodb.eu-west-2.amazonaws.com").unsafeRun
 
 class: nord-light, center, middle
 
-## 5 Months 24 Days
+## 6 Months
 
 ---
 
@@ -233,14 +245,14 @@ class: nord-light
 ## HTTP - us-east-1 server
 
 ```scala
-http.client.expect [String]("https://dynamodb.us-east-1.amazonaws.com").unsafeRunSync()
+http.client.expect[String]("https://dynamodb.us-east-1.amazonaws.com").unsafeRunSync()
 ```
 
 ---
 
 class: nord-light, center, middle
 
-## 2 Years 10 Months 20 Days
+## 2 Years 11 Months
 
 ---
 
@@ -256,7 +268,7 @@ http.client.expect[String]("https://dynamodb.us-west-1.amazonaws.com").unsafeRun
 
 class: nord-light, center, middle
 
-## 4 Years 11 Months 5 Days
+## 4 Years 11 Months
 
 ---
 
@@ -272,7 +284,7 @@ sbt it:test
 
 class: nord-light, center, middle
 
-## 9.51 Millenia
+## 19.97 Millenia
 
 ---
 

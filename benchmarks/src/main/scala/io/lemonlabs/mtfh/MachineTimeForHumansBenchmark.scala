@@ -1,4 +1,4 @@
-package io.lemonlabs.uri
+package io.lemonlabs.mtfh
 
 import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.infra.Blackhole
@@ -18,27 +18,31 @@ class MachineTimeForHumansBenchmark {
   var b: Int = _
 
   var key: UUID = _
-  var oneHundredDoubles: Map[UUID, Double] = _
+  var oneHundredInts: Map[UUID, Int] = _
+  var oneHundred10MegaByteBlobs: Map[UUID, Array[Byte]] = _
 
   var http: Http = _
+
+  val tenMegaBytesSize = 1048576
   
   @Setup def setUp(): Unit = {
-
-    def randomDouble() = Random.between(Double.MinValue, Double.MaxValue)
+    
     def randomInt() = Random.between(Int.MinValue, Int.MaxValue)
 
     a = randomInt()
     b = randomInt()
 
-    oneHundredDoubles = List.fill(100)(UUID.randomUUID() -> randomDouble()).toMap
-    key = oneHundredDoubles.head._1
+    oneHundredInts = List.fill(100)(UUID.randomUUID() -> randomInt()).toMap
+    key = oneHundredInts.head._1
+
+    oneHundred10MegaByteBlobs = oneHundredInts.map { case (key, _) => (key, Random.nextBytes(tenMegaBytesSize)) }
 
     http = new Http
     
-    println("a = " + a)
-    println("b = " + b)
-    println("oneHundredDoubles = " + oneHundredDoubles)
-    println("key = " + key)
+//    println("a = " + a)
+//    println("b = " + b)
+//    println("oneHundredDoubles = " + oneHundredDoubles)
+//    println("key = " + key)
   }
 
   @TearDown def teardown(): Unit = {
@@ -53,17 +57,22 @@ class MachineTimeForHumansBenchmark {
   @Benchmark
   @Fork(1)
   def mapGet(bh: Blackhole): Unit =
-    bh.consume(oneHundredDoubles.get(key))
+    bh.consume(oneHundredInts.get(key))
+
+  @Benchmark
+  @Fork(1)
+  def mapGet10MB(bh: Blackhole): Unit =
+    bh.consume(oneHundred10MegaByteBlobs.get(key))
 
   @Benchmark
   @Fork(1)
   def halfThenSum(bh: Blackhole): Unit =
-    bh.consume(oneHundredDoubles.values.map(_ / 2).sum)
+    bh.consume(oneHundredInts.values.map(_ / 2).sum)
 
   @Benchmark
   @Fork(1)
   def sumThenHalf(bh: Blackhole): Unit =
-    bh.consume(oneHundredDoubles.values.sum / 2)
+    bh.consume(oneHundredInts.values.sum / 2)
 
   @Benchmark
   @Fork(1)

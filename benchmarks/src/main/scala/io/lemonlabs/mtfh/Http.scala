@@ -1,4 +1,4 @@
-package io.lemonlabs.uri
+package io.lemonlabs.mtfh
 
 import cats.effect._
 import org.http4s.Method.GET
