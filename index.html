@@ -47,9 +47,9 @@ class: nord-light, center, middle
 
 class: nord-light
 
-## You have a special ability
+## Milliseconds
 
-- Dealing with the millisecond time unit really well!
+- We work with them a lot
 - 5000ms timeout
 - 100ms HTTP response time
 
@@ -64,7 +64,9 @@ class: nord-light
 
 ---
 
-class: nord-light, center, middle
+class: nord-light
+
+## Microseconds and Nanoseconds
  
 - A microsecond = 1 millionth of a second
 - A nanosecond = 1 billionth of a second
@@ -79,11 +81,11 @@ class: nord-light, center, middle
 
 ---
 
-class: nord-light
+class: nord-light, center, middle
  
-## No, I mean *really* slow
+## No, I mean <i>really</i> slow
 
- - A 1 nanosecond operation now takes 1 second
+ A 1 nanosecond operation now takes 1 second
 
 ![slow sloth](https://media.giphy.com/media/OocLVILtd7ybm/giphy.gif)
 
@@ -116,22 +118,6 @@ ints.get(key)
 class: nord-light, center, middle
 
 ## Quiz time!
-
----
-
-class: nord-light
- 
-## Map.get 10MB
-
-```scala
-tenMegaByteBlobs.get(key)
-```
-
----
-
-class: nord-light, center, middle
-
-## 8.5 Seconds
 
 ---
 
@@ -190,13 +176,7 @@ class: nord-light
 
 ```scala
 io.circe.parser.parse (
-  """
-    {
-      "foo": "bar",
-      "baz": 123,
-      "list of stuff": [ 4, 5, 6 ]
-    }
-  """
+  """{ "foo": "bar", "baz": 123, "list of stuff": [ 4, 5, 6 ] }"""
 )
 ```
 
